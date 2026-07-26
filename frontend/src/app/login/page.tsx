@@ -124,7 +124,7 @@ export default function Login() {
               >
                 <div className="font-bold text-white mb-0.5">Admin Account</div>
                 <div>Ravikant Prajapati</div>
-                <div className="text-[10px] text-slate-400 mt-1">sarah@leadplatform.com</div>
+                <div className="text-[10px] text-slate-400 mt-1">admin@leadplatform.com</div>
               </button>
               <button
                 type="button"

@@ -19,7 +19,7 @@ async function main() {
   const admin = await prisma.user.create({
     data: {
       email: 'admin@leadplatform.com',
-      name: 'Sarah Jenkins (Admin)',
+      name: 'Ravikant Prajapati',
       passwordHash: adminPasswordHash,
       role: Role.ADMIN,
     },
@@ -28,7 +28,7 @@ async function main() {
   const member = await prisma.user.create({
     data: {
       email: 'member@leadplatform.com',
-      name: 'John Doe (Member)',
+      name: 'Surya Prajapati',
       passwordHash: memberPasswordHash,
       role: Role.MEMBER,
     },
