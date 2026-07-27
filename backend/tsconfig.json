@@ -8,8 +8,11 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": "src",
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "prisma/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["src/__tests__/**/*", "node_modules", "dist"]
 }
+
+
