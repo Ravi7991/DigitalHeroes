@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Digital Heroes - CRM & Lead Management System
 
-## Getting Started
+A full-stack Lead Management CRM application designed for modern sales teams to capture, assign, track, and close leads efficiently with role-based access control (RBAC).
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 📦 Project Deliverables Summary
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. 🐙 Public GitHub Repository & Automated Tests
+- **GitHub Repository**: [https://github.com/Ravi7991/DigitalHeroes](https://github.com/Ravi7991/DigitalHeroes)
+- **Automated Test Suite**: 100% passing Vitest + Supertest integration tests in `backend/src/__tests__/api.test.ts`.
+- **Run Tests Locally**:
+  ```bash
+  cd backend
+  npm test
+  ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. 🌐 Deployed Application & Role Credentials
 
-## Learn More
+The application is deployed on **Render** (via 1-click `render.yaml` Blueprint).
 
-To learn more about Next.js, take a look at the following resources:
+- **Frontend App URL**: [http://localhost:3000](http://localhost:3000) *(Or your live Render Frontend URL)*
+- **Backend API URL**: [http://localhost:5000](http://localhost:5000) *(Or your live Render Backend URL)*
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### 🔑 Role Credentials for Testing & Review
+| Role | Email | Password | Permissions & Capabilities |
+| :--- | :--- | :--- | :--- |
+| **👑 Admin** | `admin@leadplatform.com` | `admin123` | Full access: View all leads, assign/reassign leads, delete leads, add notes, view activity logs. |
+| **👤 Member** | `member@leadplatform.com` | `member123` | Restricted access: View leads, update status & add notes **only on leads assigned to them**. |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+### 3. 📚 Complete API Documentation
+Detailed API specs, request/response formats, authentication, and endpoint authorization matrix are documented in:
+👉 **[API_DOCUMENTATION.md](./API_DOCUMENTATION.md)**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Architecture & Tech Stack
+
+- **Frontend**: Next.js 16 (App Router, Turbopack, Tailwind CSS, Lucide Icons)
+- **Backend**: Node.js, Express, TypeScript, Prisma ORM, SQLite database
+- **Authentication**: JWT (JSON Web Tokens) with HTTP cookies / Bearer headers
+- **Deployment**: Render Blueprint (`render.yaml`)
+
+---
+
+## ⚡ Local Setup Instructions
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Ravi7991/DigitalHeroes.git
+   cd DigitalHeroes
+   ```
+
+2. **Start Backend**:
+   ```bash
+   cd backend
+   npm install
+   npx prisma generate
+   npx prisma db push
+   npx tsx prisma/seed.ts
+   npm run dev
+   ```
+   *(Backend starts on `http://localhost:5000`)*
+
+3. **Start Frontend**:
+   ```bash
+   cd ../frontend
+   npm install
+   npm run dev
+   ```
+   *(Frontend starts on `http://localhost:3000`)*
