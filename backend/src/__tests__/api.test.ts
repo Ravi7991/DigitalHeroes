@@ -222,4 +222,34 @@ describe('Express REST API CRM Endpoints Tests', () => {
       expect(checkLead).toBeNull();
     });
   });
+
+  afterAll(async () => {
+    // Re-seed default users after tests complete
+    await prisma.activityLog.deleteMany();
+    await prisma.note.deleteMany();
+    await prisma.lead.deleteMany();
+    await prisma.user.deleteMany();
+
+    const adminHash = await hashPassword('admin123');
+    const memberHash = await hashPassword('member123');
+
+    await prisma.user.create({
+      data: {
+        email: 'admin@leadplatform.com',
+        name: 'Ravikant Prajapati',
+        passwordHash: adminHash,
+        role: Role.ADMIN,
+      },
+    });
+
+    await prisma.user.create({
+      data: {
+        email: 'member@leadplatform.com',
+        name: 'Surya Prajapati',
+        passwordHash: memberHash,
+        role: Role.MEMBER,
+      },
+    });
+  });
 });
+
