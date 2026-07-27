@@ -220,7 +220,7 @@ app.get('/leads', authenticate, async (req, res) => {
 // GET /leads/:id - Detail view
 app.get('/leads/:id', authenticate, async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     const lead = await prisma.lead.findUnique({
       where: { id },
@@ -257,7 +257,7 @@ app.get('/leads/:id', authenticate, async (req, res) => {
 // PATCH /leads/:id - Update lead
 app.patch('/leads/:id', authenticate, async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { name, email, phone, company, value, status, assignedToId } = req.body;
     const user = req.user!;
 
@@ -364,7 +364,7 @@ app.patch('/leads/:id', authenticate, async (req, res) => {
 // DELETE /leads/:id - Delete lead (Admin only)
 app.delete('/leads/:id', authenticate, authorize([Role.ADMIN]), async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     const lead = await prisma.lead.findUnique({
       where: { id },
@@ -388,7 +388,7 @@ app.delete('/leads/:id', authenticate, authorize([Role.ADMIN]), async (req, res)
 // POST /leads/:id/notes - Add a note to a lead
 app.post('/leads/:id/notes', authenticate, async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { content } = req.body;
     const user = req.user!;
 
@@ -439,7 +439,10 @@ app.post('/leads/:id/notes', authenticate, async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 CRM Backend Server running at http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`🚀 CRM Backend Server running at http://localhost:${PORT}`);
+  });
+}
 export default app;
+
