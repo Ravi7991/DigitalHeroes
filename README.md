@@ -21,7 +21,7 @@ A full-stack Lead Management CRM application designed for modern sales teams to 
 
 The application is deployed on **Render** (via 1-click `render.yaml` Blueprint).
 
-- **Frontend App URL**: [http://localhost:3000](http://localhost:3000) *(Or your live Render Frontend URL)*
+- **Frontend App URL**: [http://localhost:3000](http://localhost:3000) *(https://digital-heroes-frontend-f2rz.onrender.com)*
 - **Backend API URL**: [http://localhost:5000](http://localhost:5000) *(https://digital-heroes-backend-z5zl.onrender.com)
 
 #### 🔑 Role Credentials for Testing & Review
