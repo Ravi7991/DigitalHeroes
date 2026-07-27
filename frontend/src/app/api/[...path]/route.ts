@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 async function handleProxy(req: NextRequest) {
-  const rawBackendUrl = process.env.BACKEND_API_URL || 'http://localhost:5000';
+  const rawBackendUrl = process.env.BACKEND_API_URL || 'https://digital-heroes-backend-z5zl.onrender.com/';
   const backendBaseUrl = rawBackendUrl.replace(/\/$/, '');
   const pathname = req.nextUrl.pathname;
   const targetPath = pathname.replace(/^\/api/, '');
