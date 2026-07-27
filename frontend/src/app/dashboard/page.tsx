@@ -180,8 +180,10 @@ export default function Dashboard() {
       if (res.ok) {
         setLeads((prev) => prev.filter((l) => l.id !== leadId));
       } else {
-        const data = await res.json();
-        alert(data.error || 'Failed to delete lead');
+        const text = await res.text();
+        let data: any = {};
+        try { data = JSON.parse(text); } catch {}
+        alert(data.error || `Failed to delete lead (Status ${res.status})`);
       }
     } catch (err) {
       console.error('Delete error:', err);
@@ -203,8 +205,10 @@ export default function Dashboard() {
           prev.map((l) => (l.id === leadId ? { ...l, assignedTo: updated.assignedTo, assignedToId: updated.assignedToId } : l))
         );
       } else {
-        const data = await res.json();
-        alert(data.error || 'Failed to assign lead');
+        const text = await res.text();
+        let data: any = {};
+        try { data = JSON.parse(text); } catch {}
+        alert(data.error || `Failed to assign lead (Status ${res.status})`);
       }
     } catch (err) {
       console.error('Assign error:', err);
@@ -233,7 +237,9 @@ export default function Dashboard() {
           prev.map((l) => (l.id === leadId ? { ...l, status: updated.status } : l))
         );
       } else {
-        const data = await res.json();
+        const text = await res.text();
+        let data: any = {};
+        try { data = JSON.parse(text); } catch {}
         alert(data.error || 'Forbidden: You can only move leads assigned to you');
       }
     } catch (err) {

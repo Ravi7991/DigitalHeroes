@@ -23,7 +23,15 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      const responseText = await res.text();
+      let data: any = {};
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        if (!res.ok) {
+          throw new Error(`Server error (${res.status}): Please check that the backend is running`);
+        }
+      }
 
       if (!res.ok) {
         throw new Error(data.error || 'Login failed');

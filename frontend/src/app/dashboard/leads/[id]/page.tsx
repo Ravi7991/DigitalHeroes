@@ -157,8 +157,10 @@ export default function LeadDetails({ params }: Props) {
         // Reload details to get new activity log
         reloadLead();
       } else {
-        const data = await res.json();
-        alert(data.error || 'Failed to update status');
+        const text = await res.text();
+        let data: any = {};
+        try { data = JSON.parse(text); } catch {}
+        alert(data.error || `Failed to update status (Status ${res.status})`);
       }
     } catch (err) {
       console.error(err);
@@ -178,8 +180,10 @@ export default function LeadDetails({ params }: Props) {
       if (res.ok) {
         reloadLead();
       } else {
-        const data = await res.json();
-        alert(data.error || 'Failed to assign lead');
+        const text = await res.text();
+        let data: any = {};
+        try { data = JSON.parse(text); } catch {}
+        alert(data.error || `Failed to assign lead (Status ${res.status})`);
       }
     } catch (err) {
       console.error(err);
@@ -208,8 +212,10 @@ export default function LeadDetails({ params }: Props) {
         setEditMode(false);
         reloadLead();
       } else {
-        const data = await res.json();
-        alert(data.error || 'Failed to update lead details');
+        const text = await res.text();
+        let data: any = {};
+        try { data = JSON.parse(text); } catch {}
+        alert(data.error || `Failed to update lead details (Status ${res.status})`);
       }
     } catch (err) {
       console.error(err);
@@ -233,8 +239,10 @@ export default function LeadDetails({ params }: Props) {
         setNewNoteContent('');
         reloadLead();
       } else {
-        const data = await res.json();
-        alert(data.error || 'Failed to add note');
+        const text = await res.text();
+        let data: any = {};
+        try { data = JSON.parse(text); } catch {}
+        alert(data.error || `Failed to add note (Status ${res.status})`);
       }
     } catch (err) {
       console.error(err);

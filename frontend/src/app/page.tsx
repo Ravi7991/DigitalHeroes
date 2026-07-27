@@ -34,8 +34,10 @@ export default function Home() {
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Failed to submit form');
+        const text = await res.text();
+        let data: any = {};
+        try { data = JSON.parse(text); } catch {}
+        throw new Error(data.error || `Submission failed (Server status ${res.status})`);
       }
 
       setStatus('success');
