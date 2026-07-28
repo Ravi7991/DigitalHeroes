@@ -16,35 +16,56 @@ export default function Login() {
     setLoading(true);
     setError('');
 
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+    // Retry up to 3 times to handle Render free-tier cold start (502s)
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY_MS = 5000;
 
-      const responseText = await res.text();
-      let data: any = {};
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
       try {
-        data = JSON.parse(responseText);
-      } catch {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+
+        // 502 = backend cold-starting on Render free tier, retry
+        if (res.status === 502 && attempt < MAX_RETRIES) {
+          setError(`Backend is waking up… retrying (${attempt}/${MAX_RETRIES - 1})`);
+          await new Promise((r) => setTimeout(r, RETRY_DELAY_MS));
+          continue;
+        }
+
+        const responseText = await res.text();
+        let data: any = {};
+        try {
+          data = JSON.parse(responseText);
+        } catch {
+          if (!res.ok) {
+            throw new Error(`Server error (${res.status}): Unexpected response from backend`);
+          }
+        }
+
         if (!res.ok) {
-          throw new Error(`Server error (${res.status}): Please check that the backend is running`);
+          throw new Error(data.error || 'Login failed');
+        }
+
+        // Successful login
+        router.push('/dashboard');
+        router.refresh();
+        return;
+      } catch (err: any) {
+        if (attempt === MAX_RETRIES) {
+          console.error(err);
+          setError(err.message || 'Invalid email or password');
+          setLoading(false);
+        } else {
+          setError(`Connection failed, retrying (${attempt}/${MAX_RETRIES - 1})…`);
+          await new Promise((r) => setTimeout(r, RETRY_DELAY_MS));
         }
       }
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Login failed');
-      }
-
-      // Successful login
-      router.push('/dashboard');
-      router.refresh();
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || 'Invalid email or password');
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
   const handleFillCredentials = (role: 'admin' | 'member') => {
@@ -107,7 +128,11 @@ export default function Login() {
             </div>
 
             {error && (
-              <div className="bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs p-3 rounded-lg text-center">
+              <div className={`border text-xs p-3 rounded-lg text-center ${
+                error.includes('waking up') || error.includes('retrying')
+                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+                  : 'bg-rose-500/10 border-rose-500/30 text-rose-400'
+              }`}>
                 {error}
               </div>
             )}
