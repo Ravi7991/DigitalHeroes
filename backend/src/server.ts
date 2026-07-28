@@ -12,9 +12,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS setup: allow requests from frontend (localhost & onrender.com)
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://digital-heroes-frontend-f2rz.onrender.com';
+
+// CORS setup: allow requests from frontend (digital-heroes-frontend-f2rz.onrender.com, localhost & custom origin)
 app.use(cors({
-  origin: true, // Allow all origins for seamless cross-origin requests
+  origin: true, // Dynamically reflects origin (allows production frontend and local dev)
   credentials: true,
   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],

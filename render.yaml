@@ -4,13 +4,19 @@ services:
     name: digital-heroes-backend
     env: node
     rootDir: backend
-    buildCommand: npm install && npx prisma generate && npx prisma db push && npx tsx prisma/seed.ts && npm run build
+    buildCommand: npm install && npx prisma generate && npx prisma migrate deploy && npx tsx prisma/seed.ts && npm run build
     startCommand: npm start
     envVars:
       - key: DATABASE_URL
-        value: file:./dev.db
+        fromDatabase:
+          name: digital-heroes-db
+          property: connectionString
       - key: JWT_SECRET
         generateValue: true
+      - key: FRONTEND_URL
+        value: https://digital-heroes-frontend-f2rz.onrender.com
+      - key: NODE_ENV
+        value: production
 
   # Next.js Frontend Web Service
   - type: web
@@ -21,7 +27,18 @@ services:
     startCommand: npm start
     envVars:
       - key: BACKEND_API_URL
-        fromService:
-          type: web
-          name: digital-heroes-backend
-          property: host
+        value: https://digital-heroes-backend-z5zl.onrender.com
+      - key: NEXT_PUBLIC_API_URL
+        value: https://digital-heroes-backend-z5zl.onrender.com
+      - key: FRONTEND_URL
+        value: https://digital-heroes-frontend-f2rz.onrender.com
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://digital-heroes-frontend-f2rz.onrender.com
+      - key: JWT_SECRET
+        generateValue: true
+
+databases:
+  - name: digital-heroes-db
+    databaseName: digital_heroes
+    user: digital_heroes_user
+    plan: free

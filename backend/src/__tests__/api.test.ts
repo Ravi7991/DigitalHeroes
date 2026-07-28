@@ -59,6 +59,31 @@ describe('Express REST API CRM Endpoints Tests', () => {
     });
   });
 
+  describe('CORS Configuration Tests', () => {
+    it('should return CORS headers for requests with an Origin header', async () => {
+      const res = await request(app)
+        .get('/health')
+        .set('Origin', 'https://digital-heroes-frontend-f2rz.onrender.com');
+
+      expect(res.headers['access-control-allow-origin']).toBe('https://digital-heroes-frontend-f2rz.onrender.com');
+      expect(res.headers['access-control-allow-credentials']).toBe('true');
+    });
+
+    it('should handle OPTIONS preflight requests with correct CORS response', async () => {
+      const res = await request(app)
+        .options('/leads')
+        .set('Origin', 'https://digital-heroes-frontend-f2rz.onrender.com')
+        .set('Access-Control-Request-Method', 'POST')
+        .set('Access-Control-Request-Headers', 'Content-Type, Authorization');
+
+      expect([200, 204]).toContain(res.status);
+      expect(res.headers['access-control-allow-origin']).toBe('https://digital-heroes-frontend-f2rz.onrender.com');
+      expect(res.headers['access-control-allow-credentials']).toBe('true');
+      expect(res.headers['access-control-allow-methods']).toContain('POST');
+      expect(res.headers['access-control-allow-headers']).toContain('Content-Type');
+    });
+  });
+
   describe('Auth Endpoints & Access Control', () => {
     it('should login successfully with correct credentials', async () => {
       const res = await request(app)
