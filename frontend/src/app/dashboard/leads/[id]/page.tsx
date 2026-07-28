@@ -66,11 +66,12 @@ export default function LeadDetails({ params }: Props) {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Note form state
-  const [newNoteContent, setNewNoteContent] = useState('');
+  const [assigneeUpdating, setAssigneeUpdating] = useState(false);
+  const [statusUpdating, setStatusUpdating] = useState(false);
   const [noteSubmitting, setNoteSubmitting] = useState(false);
 
-  // Edit details form state
+  // Note form state
+  const [newNoteContent, setNewNoteContent] = useState('');
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState({
     name: '',
@@ -145,6 +146,7 @@ export default function LeadDetails({ params }: Props) {
 
   const handleUpdateStatus = async (status: string) => {
     if (!lead) return;
+    setStatusUpdating(true);
     try {
       const res = await fetch(`/api/leads/${lead.id}`, {
         method: 'PATCH',
@@ -153,28 +155,29 @@ export default function LeadDetails({ params }: Props) {
       });
 
       if (res.ok) {
-        const updated = await res.json();
-        // Reload details to get new activity log
         reloadLead();
       } else {
         const text = await res.text();
         let data: any = {};
         try { data = JSON.parse(text); } catch {}
-        alert(data.error || `Failed to update status (Status ${res.status})`);
+        alert(data.error || `Failed to update status (${res.status})`);
       }
     } catch (err) {
       console.error(err);
       alert('Failed to update status');
+    } finally {
+      setStatusUpdating(false);
     }
   };
 
   const handleUpdateAssignee = async (assignedToId: string) => {
     if (!lead) return;
+    setAssigneeUpdating(true);
     try {
       const res = await fetch(`/api/leads/${lead.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ assignedToId: assignedToId || null }),
+        body: JSON.stringify({ assignedToId: assignedToId === '' ? null : assignedToId }),
       });
 
       if (res.ok) {
@@ -183,11 +186,13 @@ export default function LeadDetails({ params }: Props) {
         const text = await res.text();
         let data: any = {};
         try { data = JSON.parse(text); } catch {}
-        alert(data.error || `Failed to assign lead (Status ${res.status})`);
+        alert(data.error || `Failed to assign lead (${res.status})`);
       }
     } catch (err) {
       console.error(err);
       alert('Failed to assign lead');
+    } finally {
+      setAssigneeUpdating(false);
     }
   };
 
@@ -458,7 +463,8 @@ export default function LeadDetails({ params }: Props) {
                 <select
                   value={lead.status}
                   onChange={(e) => handleUpdateStatus(e.target.value)}
-                  className="w-full bg-[#1e293b]/45 border border-white/10 rounded px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-all cursor-pointer"
+                  disabled={statusUpdating}
+                  className="w-full bg-[#1e293b]/45 border border-white/10 rounded px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-wait"
                 >
                   <option value="NEW">New</option>
                   <option value="CONTACTED">Contacted</option>
@@ -484,7 +490,8 @@ export default function LeadDetails({ params }: Props) {
                 <select
                   value={lead.assignedToId || ''}
                   onChange={(e) => handleUpdateAssignee(e.target.value)}
-                  className="w-full bg-[#1e293b]/45 border border-white/10 rounded px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-all cursor-pointer"
+                  disabled={assigneeUpdating}
+                  className="w-full bg-[#1e293b]/45 border border-white/10 rounded px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-wait"
                 >
                   <option value="">Unassigned</option>
                   {users.map((u) => (
@@ -496,6 +503,9 @@ export default function LeadDetails({ params }: Props) {
                   {lead.assignedTo ? lead.assignedTo.name : 'Unassigned'}
                   <span className="text-[9px] text-slate-500 font-medium block mt-0.5">Only admins can assign accounts</span>
                 </div>
+              )}
+              {assigneeUpdating && (
+                <p className="text-[10px] text-blue-400 animate-pulse">Saving assignment…</p>
               )}
             </div>
           </div>

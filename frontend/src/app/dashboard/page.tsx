@@ -196,7 +196,7 @@ export default function Dashboard() {
       const res = await fetch(`/api/leads/${leadId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ assignedToId: userId || null }),
+        body: JSON.stringify({ assignedToId: userId === '' ? null : userId }),
       });
 
       if (res.ok) {
